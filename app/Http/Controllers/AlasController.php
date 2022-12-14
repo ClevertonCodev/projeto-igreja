@@ -25,7 +25,6 @@ class AlasController extends Controller
             
             $atributos_estacas = 'estacas:id,'.$request->atributos_estacas;
             $modeloRepository->selectAtributosRegistrosRelacionados($atributos_estacas);
-            dd($modeloRepository);
         } else {
             
             $modeloRepository->selectAtributosRegistrosRelacionados('estacas');

@@ -21,27 +21,26 @@ class UsersController extends Controller
      */
     public function index(Request $request)
     {   
-        
-        $UsersRepository = new UsersRepository($this->Users);
+        $modeloRepository = new UsersRepository($this->Users);
 
         if($request->has('atributos_alas')) {
             
-            $atributos_users = 'alas:id,'.$request->atributos_users;
-            $UsersRepository->selectAtributosRegistrosRelacionados($atributos_users);
+            $atributos_alas = 'alas:id,'.$request->atributos_alas;
+            $modeloRepository->selectAtributosRegistrosRelacionados($atributos_alas);
         } else {
             
-            $UsersRepository->selectAtributosRegistrosRelacionados('alas');
+            $modeloRepository->selectAtributosRegistrosRelacionados('alas');
         }
 
         if($request->has('filtro')) {
-            $UsersRepository->filtro($request->filtro);
+            $modeloRepository->filtro($request->filtro);
         }
 
         if($request->has('atributos')) {
-            $UsersRepository->selectAtributos($request->atributos);
+            $modeloRepository->selectAtributos($request->atributos );
         } 
 
-        return response()->json($UsersRepository->getResultado(), 200);
+        return response()->json($modeloRepository->getResultado(), 200);
 
     }
 
