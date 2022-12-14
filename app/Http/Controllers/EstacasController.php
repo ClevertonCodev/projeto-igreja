@@ -21,14 +21,17 @@ class EstacasController extends Controller
 
     public function index(Request $request)
     {
-        $modeloRepository = new EstacasRepository($this->Estacas);
+
+        $estacas = $this->Estacas::all();
+        return response()->json($estacas, 200);
+        // $modeloRepository = new EstacasRepository($this->Estacas);
 
 
-        if($request->has('atributos')) {
-            $modeloRepository->selectAtributos($request->atributos);
-        } 
+        // if($request->has('atributos')) {
+        //     $modeloRepository->selectAtributos($request->atributos);
+        // } 
 
-        return response()->json($modeloRepository->getResultado(), 200);
+        // return response()->json($modeloRepository->getResultado(), 200);
     }
 
     /**

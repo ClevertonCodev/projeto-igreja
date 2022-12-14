@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('name', 255);
             $table->string('password', 255);
             $table->string('email' , 100);
-            $table->unsignedTinyInteger('active');
+            $table->boolean('active');
             $table->enum('type', ['comum', 'secretarios', 'super']);
             $table->string('rg', 20);
             $table->string('cpf', 11);

@@ -1,18 +1,18 @@
-<?php
+<?php 
 
 namespace App\Repositories;
 
 use Illuminate\Database\Eloquent\Model;
 
-class EstacasRepository {
-
+abstract class MainRepository{
     public function __construct(Model $model) {
         $this->model = $model;
     }
 
     public function selectAtributosRegistrosRelacionados($atributos) {
+       
         $this->model = $this->model->with($atributos);
-        
+        //a query está sendo montada
     }
 
     public function filtro($filtros) {
