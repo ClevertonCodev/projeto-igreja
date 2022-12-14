@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Users;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Repositories\UsersRepository;
 
 
 class UsersController extends Controller
@@ -18,10 +19,30 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $users = $this->Users->All();
-        return response()->json($users, 200);
+    public function index(Request $request)
+    {   
+        
+        $UsersRepository = new UsersRepository($this->Users);
+
+        if($request->has('atributos_alas')) {
+            
+            $atributos_users = 'alas:id,'.$request->atributos_users;
+            $UsersRepository->selectAtributosRegistrosRelacionados($atributos_users);
+        } else {
+            
+            $UsersRepository->selectAtributosRegistrosRelacionados('alas');
+        }
+
+        if($request->has('filtro')) {
+            $UsersRepository->filtro($request->filtro);
+        }
+
+        if($request->has('atributos')) {
+            $UsersRepository->selectAtributos($request->atributos);
+        } 
+
+        return response()->json($UsersRepository->getResultado(), 200);
+
     }
 
 

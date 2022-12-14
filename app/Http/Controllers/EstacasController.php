@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Estacas;
 use Illuminate\Http\Request;
+use App\Repositories\EstacasRepository;
 
 class EstacasController extends Controller
 {
@@ -18,10 +19,16 @@ class EstacasController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function index()
+    public function index(Request $request)
     {
-        $estacas = $this->Estacas->all();
-        return response()->json($estacas, 200);
+        $modeloRepository = new EstacasRepository($this->Estacas);
+
+
+        if($request->has('atributos')) {
+            $modeloRepository->selectAtributos($request->atributos);
+        } 
+
+        return response()->json($modeloRepository->getResultado(), 200);
     }
 
     /**
@@ -104,8 +111,6 @@ class EstacasController extends Controller
         } else {
             $request->validate($estacas->rules(), $estacas->feedback());
         }
-
-
 
         $estacas->update($request->all());
 

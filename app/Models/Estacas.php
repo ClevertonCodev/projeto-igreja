@@ -22,4 +22,5 @@ class Estacas extends Model
             'required'=> 'O campo :attribute é obrigatório',
         ]; 
     }
+
 }

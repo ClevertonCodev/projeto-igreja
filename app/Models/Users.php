@@ -31,6 +31,11 @@ class Users extends Model
         ]; 
     }
 
+    public function alas() {
+        //um usuario comum pertence a varias alas
+        return $this->belongsTo('App\Models\Alas');
+    }
+
    
 }
 
