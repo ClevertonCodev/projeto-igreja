@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -17,11 +18,33 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $fillable = ['name', 'password', 'email', 'active', 'type', 'rg', 'cpf', 'telefone', 'endereço', 'alas_id'];
+
+    
+    public function rules(){
+        return [
+        'name' => 'required',
+        'email' => 'required|unique:Users,email'.$this->id,
+        'cpf' => 'required|unique:Users,cpf'.$this->id,
+        'password'=> 'required',
+        'telefone'  => 'required', 
+        'endereço' => 'required'];
+
+    }
+
+    public function feedback(){
+        return [
+            'required'=> 'O campo :attribute é obrigatório',
+            'email.unique' => 'Esse e-mail já existe',
+            'cpf.unique' => 'Esse CPF já consta no sistema',
+        ]; 
+    }
+
+    public function alas() {
+        //um usuario comum pertence a varias alas
+        return $this->belongsTo('App\Models\Alas');
+    }
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -41,4 +64,25 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
 }

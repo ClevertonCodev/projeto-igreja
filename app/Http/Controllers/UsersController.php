@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Users;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Repositories\UsersRepository;
@@ -10,7 +10,7 @@ use App\Repositories\UsersRepository;
 
 class UsersController extends Controller
 {
-    public function __construct(Users $users)
+    public function __construct(User $users)
     {
         $this->Users = $users;
     }
@@ -64,18 +64,19 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         $request->validate($this->Users->rules(), $this->Users->feedback());
-
+       
         $user = $request->type;
         $ala = $request->alas_id;
 
-
         if ($user == 'super' || $user == "secretarios" || $ala != '' && $user == 'comum' ) {
+
+            
 
             $users = $this->Users->create(array_merge(
                 $request->only('name', 'email', 'active', 'type', 'rg', 'cpf', 'telefone', 'endereço', 'alas_id'),
                 ['password' => Hash::make($request->password)],
             ));
-
+            
             return response()->json($users, 201);
         }
 
@@ -85,7 +86,7 @@ class UsersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Users  $users
+     * @param  \App\Models\User  $users
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -101,7 +102,7 @@ class UsersController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Users  $users
+     * @param  \App\Models\User  $users
      * @return \Illuminate\Http\Response
      */
     // public function edit(Users $users)
@@ -113,7 +114,7 @@ class UsersController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Users  $users
+     * @param  \App\Models\User  $users
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -147,7 +148,7 @@ class UsersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Users  $users
+     * @param  \App\Models\User  $users
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

@@ -1,5 +1,7 @@
 <?php
 
+use Facade\FlareClient\Api;
+
 return [
 
     /*
@@ -38,6 +40,11 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
+            'provider' => 'users',
+        ],
+
+        'api' => [
+            'driver' => 'jwt',
             'provider' => 'users',
         ],
     ],
