@@ -19,15 +19,20 @@ class AuthController extends Controller
     $email =  $request->email;
     $results = $this->User->where('email', $email)->get('active');
     $active = $results ->implode('active');
+    $query =  $this->User->where('email', $email)->get('name');
+    $namet = $query ->implode('name');
+    $names = explode(' ', $namet);
+    $name = $names[0]; 
+    
     
     if($active == 1){
       
       $credenciais = $request->all(['email', 'password']);
       $token = auth('api')->attempt($credenciais);
-  
+      
       if($token){
   
-       return response()->json(['token'=> $token]);
+       return response()->json(['token'=> $token, 'name' => $name]);
   
       }else{
   
