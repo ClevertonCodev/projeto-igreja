@@ -20,28 +20,27 @@ class UsersController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {   
+    {
         $modeloRepository = new UsersRepository($this->Users);
 
-        if($request->has('atributos_alas')) {
-            
-            $atributos_alas = 'alas:id,'.$request->atributos_alas;
+        if ($request->has('atributos_alas')) {
+
+            $atributos_alas = 'alas:id,' . $request->atributos_alas;
             $modeloRepository->selectAtributosRegistrosRelacionados($atributos_alas);
         } else {
-            
+
             $modeloRepository->selectAtributosRegistrosRelacionados('alas');
         }
 
-        if($request->has('filtro')) {
+        if ($request->has('filtro')) {
             $modeloRepository->filtro($request->filtro);
         }
 
-        if($request->has('atributos')) {
-            $modeloRepository->selectAtributos($request->atributos );
-        } 
+        if ($request->has('atributos')) {
+            $modeloRepository->selectAtributos($request->atributos);
+        }
 
         return response()->json($modeloRepository->getResultado(), 200);
-
     }
 
 
@@ -64,19 +63,19 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         $request->validate($this->Users->rules(), $this->Users->feedback());
-       
+
         $user = $request->type;
         $ala = $request->alas_id;
 
-        if ($user == 'super' || $user == "secretarios" || $ala != '' && $user == 'comum' ) {
+        if ($user == 'super' || $user == "secretarios" || $ala != '' && $user == 'comum') {
 
-            
+
 
             $users = $this->Users->create(array_merge(
                 $request->only('name', 'email', 'active', 'type', 'rg', 'cpf', 'telefone', 'endereço', 'alas_id'),
                 ['password' => Hash::make($request->password)],
             ));
-            
+
             return response()->json($users, 201);
         }
 
@@ -127,18 +126,70 @@ class UsersController extends Controller
 
         if ($request->method() === 'PATCH') {
 
-            $regrasvalidate = array();
+            if ($request->name) {
 
-            foreach ($users->rules() as $input => $regra) {
-
-
-                if (array_key_exists($input, $request->all())) {
-                    $regrasvalidate[$input] = $regra;
-                }
+                $users->update([
+                    'name' => $request->name
+                ]);
             }
-            $request->validate($regrasvalidate, $users->feedback());
-        } else {
-            $request->validate($users->rules(), $users->feedback());
+
+            if ($request->password) {
+
+                $users->update([
+                    'password' => Hash::make($request->password)
+                ]);
+            }
+
+            if ($request->email) {
+
+                $users->update([
+                    'email' => $request->email
+                ]);
+            }
+            if ($request->active) {
+
+                $users->update([
+                    'active' => $request->active
+                ]);
+            }
+            if ($request->type) {
+
+                $users->update([
+                    'type' => $request->type
+                ]);
+            }
+            if ($request->rg) {
+
+                $users->update([
+                    'rg' => $request->rg
+                ]);
+            }
+            if ($request->cpf) {
+
+                $users->update([
+                    'cpf' => $request->cpf
+                ]);
+            }
+            if ($request->telefone) {
+
+                $users->update([
+                    'telefone' => $request->telefone
+                ]);
+            }
+            if ($request->endereço) {
+
+                $users->update([
+                    'endereço' => $request->endereço
+                ]);
+            }
+            if ($request->alas_id) {
+
+                $users->update([
+                    'alas_id' => $request->alas_id
+                ]);
+            }
+            
+            return response()->json($users, 200);
         }
 
         $users->update($request->all());

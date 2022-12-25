@@ -39,7 +39,7 @@ class AlasController extends Controller
         } 
 
         return response()->json($modeloRepository->getResultado(), 200);
-
+       
     }
 
     /**
@@ -101,6 +101,8 @@ class AlasController extends Controller
     public function update(Request $request, $id)
     {
         $alas = $this->Alas->find($id);
+
+
 
         if ($alas === null) {
             return response()->json(['erro' => 'O recurso solicitado não existe'], 404);
