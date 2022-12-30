@@ -21,8 +21,9 @@ class UsersController extends Controller
      */
     public function index(Request $request)
     {
-        $modeloRepository = new UsersRepository($this->Users);
-
+    
+         $modeloRepository = new UsersRepository($this->Users);
+         
         if ($request->has('atributos_alas')) {
 
             $atributos_alas = 'alas:id,' . $request->atributos_alas;
@@ -39,6 +40,7 @@ class UsersController extends Controller
         if ($request->has('atributos')) {
             $modeloRepository->selectAtributos($request->atributos);
         }
+       
 
         return response()->json($modeloRepository->getResultado(), 200);
     }
@@ -123,77 +125,14 @@ class UsersController extends Controller
         if ($users === null) {
             return response()->json(['erro' => 'O recurso solicitado não existe'], 404);
         }
+        $request->validate($users->rules(),$users->feedback());
 
-        if ($request->method() === 'PATCH') {
+            $users->update(array_merge(
+                $request->only('name', 'email', 'active', 'type', 'rg', 'cpf', 'telefone', 'endereço', 'alas_id'),
+                ['password' => Hash::make($request->password)],
+            ));
 
-            if ($request->name) {
-
-                $users->update([
-                    'name' => $request->name
-                ]);
-            }
-
-            if ($request->password) {
-
-                $users->update([
-                    'password' => Hash::make($request->password)
-                ]);
-            }
-
-            if ($request->email) {
-
-                $users->update([
-                    'email' => $request->email
-                ]);
-            }
-            if ($request->active) {
-
-                $users->update([
-                    'active' => $request->active
-                ]);
-            }
-            if ($request->type) {
-
-                $users->update([
-                    'type' => $request->type
-                ]);
-            }
-            if ($request->rg) {
-
-                $users->update([
-                    'rg' => $request->rg
-                ]);
-            }
-            if ($request->cpf) {
-
-                $users->update([
-                    'cpf' => $request->cpf
-                ]);
-            }
-            if ($request->telefone) {
-
-                $users->update([
-                    'telefone' => $request->telefone
-                ]);
-            }
-            if ($request->endereço) {
-
-                $users->update([
-                    'endereço' => $request->endereço
-                ]);
-            }
-            if ($request->alas_id) {
-
-                $users->update([
-                    'alas_id' => $request->alas_id
-                ]);
-            }
-            
-            return response()->json($users, 200);
-        }
-
-        $users->update($request->all());
-        return response()->json($users, 200);
+            return response()->json($users, 200); 
     }
 
     /**

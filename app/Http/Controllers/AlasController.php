@@ -59,7 +59,8 @@ class AlasController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {   
+    
         $alas = $this->Alas->create($request->all());
         return response()->json($alas, 200);
     }

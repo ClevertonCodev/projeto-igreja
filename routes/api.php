@@ -21,6 +21,7 @@ Route::prefix('v1')->middleware('jwt.auth')->group(function(){
     Route::apiResource('estacas', 'App\Http\Controllers\EstacasController');
     Route::apiResource('alas', 'App\Http\Controllers\AlasController');
     Route::apiResource('users', 'App\Http\Controllers\UsersController');
+    Route::apiResource('caravanas', 'App\Http\Controllers\CaravanasController');
     Route::get('me', 'App\Http\Controllers\AuthController@me');
     Route::apiResource('home', 'App\Http\Controllers\HomeController');
     Route::post('refresh', 'App\Http\Controllers\AuthController@refresh');
