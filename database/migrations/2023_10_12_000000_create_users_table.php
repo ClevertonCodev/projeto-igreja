@@ -26,7 +26,6 @@ class CreateUsersTable extends Migration
             $table->string('endereço', 155);
             $table->unsignedBigInteger('alas_id')->nullable($value = true);
             $table->timestamps();
-            
             //foreign key 
             $table->foreign('alas_id')->references('id')->on('alas');
         });

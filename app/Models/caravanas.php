@@ -35,4 +35,9 @@ class caravanas extends Model
         ]; 
     }
 
+    public function estacas() {
+        //um usuario comum da ala pertece a uma estaca
+        return $this->belongsTo('App\Models\Estacas');
+    }
+
 }

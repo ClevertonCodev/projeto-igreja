@@ -8,7 +8,7 @@ class AuthController extends Controller
 { 
   public function __construct(User $users)
     {
-        $this->User = $users;
+        $this->User= $users;
         
     }
 
@@ -19,11 +19,6 @@ class AuthController extends Controller
     $email =  $request->email;
     $results = $this->User->where('email', $email)->get('active');
     $active = $results ->implode('active');
-    $query =  $this->User->where('email', $email)->get('name');
-    $namet = $query ->implode('name');
-    $names = explode(' ', $namet);
-    $name = $names[0]; 
-    
     
     if($active == 1){
       
@@ -32,7 +27,7 @@ class AuthController extends Controller
       
       if($token){
   
-       return response()->json(['token'=> $token, 'name' => $name]);
+       return response()->json(['token'=> $token]);
   
       }else{
   
