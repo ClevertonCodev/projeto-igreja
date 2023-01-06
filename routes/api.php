@@ -28,8 +28,6 @@ Route::prefix('v1')->middleware('jwt.auth')->group(function(){
     Route::post('logout', 'App\Http\Controllers\AuthController@logout');
 });
 
-
-
 Route::post('login', 'App\Http\Controllers\AuthController@login');
 
 

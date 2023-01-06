@@ -62,9 +62,14 @@ class CaravanasController extends Controller
     {
          
         $request->validate($this->caravanas->rules(), $this->caravanas->feedback());
-
-        $caravanas = $this->caravanas->create($request->all());
-        return response()->json($caravanas, 200);
+        $type = auth()->user()->type;
+        
+        if($type == 'secretarios'){
+            
+            $caravanas = $this->caravanas->create($request->all());
+            return response()->json($caravanas, 200);
+        }
+        return response()->json(['erro' => 'você não tem autorização'], 404);
     }
 
     /**
