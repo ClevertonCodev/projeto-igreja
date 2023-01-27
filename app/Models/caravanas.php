@@ -40,4 +40,9 @@ class caravanas extends Model
         return $this->belongsTo('App\Models\Estacas');
     }
 
+    public function Veiculos() {
+    
+        return $this->belongsToMany(Veiculos::class);
+    }
+
 }

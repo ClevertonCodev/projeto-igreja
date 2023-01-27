@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\User;
 use App\Models\caravanas;
 use App\Repositories\CaravanasRepository;
 use Illuminate\Http\Request;
@@ -29,6 +28,8 @@ class CaravanasController extends Controller
         } else {
             
             $modeloRepository->selectAtributosRegistrosRelacionados('estacas');
+            $modeloRepository->selectAtributosRegistrosRelacionados('veiculos');
+         
         }
 
         if($request->has('filtro')) {
@@ -59,14 +60,14 @@ class CaravanasController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-         
+    {   
+        $veiculo = $request->veiculo; 
         $request->validate($this->caravanas->rules(), $this->caravanas->feedback());
         $type = auth()->user()->type;
         
         if($type == 'secretarios'){
-            
             $caravanas = $this->caravanas->create($request->all());
+            $caravanas->Veiculos()->attach($veiculo);
             return response()->json($caravanas, 200);
         }
         return response()->json(['erro' => 'você não tem autorização'], 404);

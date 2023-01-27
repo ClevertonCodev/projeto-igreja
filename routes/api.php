@@ -26,6 +26,8 @@ Route::prefix('v1')->middleware('jwt.auth')->group(function(){
     Route::apiResource('home', 'App\Http\Controllers\HomeController');
     Route::post('refresh', 'App\Http\Controllers\AuthController@refresh');
     Route::post('logout', 'App\Http\Controllers\AuthController@logout');
+    Route::apiResource('tiposV', 'App\Http\Controllers\TipoVeiculosController');
+    Route::apiResource('veiculos', 'App\Http\Controllers\VeiculosController');
 });
 
 Route::post('login', 'App\Http\Controllers\AuthController@login');
