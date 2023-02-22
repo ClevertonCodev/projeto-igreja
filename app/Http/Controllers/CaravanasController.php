@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 use App\Models\caravanas;
+use App\Models\Caravanas_veiculos;
+use App\Models\Veiculos;
 use App\Repositories\CaravanasRepository;
 use Illuminate\Http\Request;
 
+//oiiii
 class CaravanasController extends Controller
 {
     public function __construct(caravanas $caravanas)
@@ -18,18 +21,18 @@ class CaravanasController extends Controller
      */
     public function index(Request $request)
     {
-        
+
         $modeloRepository = new CaravanasRepository($this->caravanas);
 
         if($request->has('atributos_estacas')) {
-            
+
             $atributos_estacas = 'estacas:id,'.$request->atributos_estacas;
             $modeloRepository->selectAtributosRegistrosRelacionados($atributos_estacas);
         } else {
-            
+
             $modeloRepository->selectAtributosRegistrosRelacionados('estacas');
             $modeloRepository->selectAtributosRegistrosRelacionados('veiculos');
-         
+
         }
 
         if($request->has('filtro')) {
@@ -38,7 +41,7 @@ class CaravanasController extends Controller
 
         if($request->has('atributos')) {
             $modeloRepository->selectAtributos($request->atributos );
-        } 
+        }
 
         return response()->json($modeloRepository->getResultado(), 200);
     }
@@ -60,14 +63,13 @@ class CaravanasController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   
-        $veiculo = $request->veiculo; 
+    {
         $request->validate($this->caravanas->rules(), $this->caravanas->feedback());
+
         $type = auth()->user()->type;
-        
+
         if($type == 'secretarios'){
             $caravanas = $this->caravanas->create($request->all());
-            $caravanas->Veiculos()->attach($veiculo);
             return response()->json($caravanas, 200);
         }
         return response()->json(['erro' => 'você não tem autorização'], 404);
@@ -86,7 +88,31 @@ class CaravanasController extends Controller
 
             return response()->json(['erro' => 'Recurso pesquisado não existe'], 404);
         }
+
+        $caravanas->load('veiculos');
+        $veiculos = $caravanas->veiculos;
+        $veiculos->load('tipo_veiculos');
         return  response()->json($caravanas, 200);
+    }
+
+     /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\caravanas  $caravanas
+     * @return \Illuminate\Http\Response
+     */
+
+    public function getone($id){
+        $caravanas = $this->caravanas->find($id);
+        if ($caravanas == null) {
+
+            return response()->json(['erro' => 'Recurso pesquisado não existe'], 404);
+        }
+
+        $caravanas->load('veiculos');
+        $veiculos = $caravanas->veiculos;
+        $veiculos->load('tipo_veiculos');
+        return  response()->json($veiculos, 200);
     }
 
     /**
@@ -95,10 +121,32 @@ class CaravanasController extends Controller
      * @param  \App\Models\caravanas  $caravanas
      * @return \Illuminate\Http\Response
      */
-    // public function edit(caravanas $caravanas)
-    // {
-    //     //
-    // }
+    public function adicionarveiculos(Request $request, $id)
+    {
+
+        $veiculos = $request->veiculo;
+        $Cadastrarveiculos = explode(',', $veiculos);
+        $caravanas = $this->caravanas->find($id);
+
+        if ($caravanas == null) {
+
+            return response()->json(['erro' => 'Recurso pesquisado não existe'], 404);
+        }
+            $veiculo = caravanas_veiculos::whereIn('veiculos_id',  $Cadastrarveiculos)->get('veiculos_id');
+            $results = $veiculo->implode('veiculos_id');
+
+            if($results != ''){
+                return response()->json(['erro' => 'O veiculo está em uso'], 404);
+            }
+
+            $caravanas->Veiculos()->attach($Cadastrarveiculos);
+            if($caravanas){
+                $caravanas->load('veiculos');
+                return response()->json($caravanas, 200);
+            }else{
+                return response()->json(['erro' => 'Algo deu errado'], 404);
+            }
+    }
 
     /**
      * Update the specified resource in storage.
@@ -151,9 +199,9 @@ class CaravanasController extends Controller
         if ($caravanas === null) {
             return response()->json(['erro' => 'Impossível realizar a exclusão. O recurso solicitado não existe'], 404);
         }
-
+        $caravanas->Veiculos()->detach();
         $caravanas->delete();
         return response()->json(['msg' => 'Caravana foi removida com sucesso!'],);
     }
-    
+
 }

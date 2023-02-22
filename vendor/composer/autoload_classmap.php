@@ -32,6 +32,7 @@ return array(
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Models\\Veiculos' => $baseDir . '/app/Models/Veiculos.php',
     'App\\Models\\caravanas' => $baseDir . '/app/Models/caravanas.php',
+    'App\\Models\\caravanas_veiculos' => $baseDir . '/app/Models/caravanas_veiculos.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'App\\Providers\\AuthServiceProvider' => $baseDir . '/app/Providers/AuthServiceProvider.php',
     'App\\Providers\\BroadcastServiceProvider' => $baseDir . '/app/Providers/BroadcastServiceProvider.php',

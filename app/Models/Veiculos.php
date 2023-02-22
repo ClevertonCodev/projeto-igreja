@@ -13,16 +13,15 @@ class Veiculos extends Model
         'tipo_veiculos_id',
         'name',
         'quantidade_lugares',
-        
     ];
-    
+
     public function rules()
     {
         return [
         'tipo_veiculos_id' => 'required',
         'name' => 'required',
         'quantidade_lugares' => 'required',
-        
+
     ];
     }
 
@@ -33,14 +32,14 @@ class Veiculos extends Model
         ];
     }
     public function tipo_veiculos() {
-        
+
         return $this->belongsTo('App\Models\TipoVeiculos');
     }
 
     public function caravanas() {
-        
+
         return $this->belongsToMany(caravanas::class);
     }
 
-   
+
 }

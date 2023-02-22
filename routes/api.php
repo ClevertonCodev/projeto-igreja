@@ -14,9 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
 Route::prefix('v1')->middleware('jwt.auth')->group(function(){
     Route::apiResource('estacas', 'App\Http\Controllers\EstacasController');
     Route::apiResource('alas', 'App\Http\Controllers\AlasController');
@@ -28,6 +25,10 @@ Route::prefix('v1')->middleware('jwt.auth')->group(function(){
     Route::post('logout', 'App\Http\Controllers\AuthController@logout');
     Route::apiResource('tiposV', 'App\Http\Controllers\TipoVeiculosController');
     Route::apiResource('veiculos', 'App\Http\Controllers\VeiculosController');
+
+    Route::post('adicionarveiculos/{id}', 'App\Http\Controllers\CaravanasController@adicionarveiculos');
+
+    Route::get('caravanasveiculos/{id}', 'App\Http\Controllers\CaravanasController@getone');
 });
 
 Route::post('login', 'App\Http\Controllers\AuthController@login');

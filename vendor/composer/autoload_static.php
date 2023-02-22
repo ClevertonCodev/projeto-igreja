@@ -542,6 +542,7 @@ class ComposerStaticInitef3b6ad333d3257a1104482fe5c76515
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Models\\Veiculos' => __DIR__ . '/../..' . '/app/Models/Veiculos.php',
         'App\\Models\\caravanas' => __DIR__ . '/../..' . '/app/Models/caravanas.php',
+        'App\\Models\\caravanas_veiculos' => __DIR__ . '/../..' . '/app/Models/caravanas_veiculos.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
         'App\\Providers\\BroadcastServiceProvider' => __DIR__ . '/../..' . '/app/Providers/BroadcastServiceProvider.php',

@@ -23,8 +23,8 @@ class VeiculosController extends Controller
 
         $modeloRepository->selectAtributosRegistrosRelacionados('tipo_veiculos');
         $modeloRepository->selectAtributosRegistrosRelacionados('caravanas');
-      
-        
+
+
 
         return response()->json($modeloRepository->getResultado(), 200);
     }
@@ -60,8 +60,8 @@ class VeiculosController extends Controller
      */
     public function show($id)
     {  $veiculos = $this->Veiculos->find($id);
+        $veiculos->load('tipo_veiculos');
         if ($veiculos == null) {
-
             return response()->json(['erro' => 'Recurso pesquisado não existe'], 404);
         }
         return  response()->json($veiculos, 200);//
