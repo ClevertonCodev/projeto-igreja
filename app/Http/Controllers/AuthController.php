@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -22,13 +23,10 @@ class AuthController extends Controller
 
       $credenciais = $request->all(['email', 'password']);
       $token = auth('api')->attempt($credenciais);
-
       if($token){
-
-       return response()->json(['token'=> $token]);
-
+       return response()->json(
+        ['token'=> $token]);
       }else{
-
        return response()->json(['erro' => 'Usuário ou senha inválido!'], 403);
 
       }

@@ -23,7 +23,7 @@ class User extends Authenticatable implements JWTSubject
 
     use SoftDeletes;
     protected $dates = ['deleted_at'];
-    
+
     public function rules(){
         return  [
         'name' => 'required',
@@ -31,10 +31,10 @@ class User extends Authenticatable implements JWTSubject
         'cpf' => 'required|unique:Users,cpf,'.$this->id,
         'active'=> 'required',
         'password'=> 'required',
-        'telefone'  => 'required', 
+        'telefone'  => 'required',
         'endereço' => 'required'
         ];
-        
+
     }
 
     public function feedback(){
@@ -42,7 +42,7 @@ class User extends Authenticatable implements JWTSubject
             'required'=> 'O campo :attribute é obrigatório',
             'email.unique' => 'Esse e-mail já existe',
             'cpf.unique' => 'Esse CPF já consta no sistema',
-        ]; 
+        ];
     }
 
     public function alas() {
@@ -68,9 +68,9 @@ class User extends Authenticatable implements JWTSubject
      */
     // protected $casts = [
     //     'active' => 'active',
-        
+
     // ];
-    
+
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
@@ -89,7 +89,8 @@ class User extends Authenticatable implements JWTSubject
      */
     public function getJWTCustomClaims()
     {
-        return [];
+        return ['name' => $this->name,
+                'type' => $this->type];
     }
 
 }
