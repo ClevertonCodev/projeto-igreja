@@ -17,16 +17,16 @@ class CreateUsersTable extends Migration
             $table->id('id');
             $table->string('name', 255);
             $table->string('password', 255);
-            $table->string('email' , 100);
+            $table->string('email' , 100)->unique()->change();;
             $table->boolean('active');
             $table->enum('type', ['comum', 'secretarios', 'super']);
             $table->string('rg', 20);
-            $table->string('cpf', 11);
+            $table->string('cpf', 11)->unique()->change();
             $table->string('telefone', 11);
             $table->string('endereço', 155);
             $table->unsignedBigInteger('alas_id')->nullable($value = true);
             $table->timestamps();
-            //foreign key 
+            //foreign key
             $table->foreign('alas_id')->references('id')->on('alas');
         });
     }

@@ -25,9 +25,7 @@ Route::prefix('v1')->middleware('jwt.auth')->group(function(){
     Route::post('logout', 'App\Http\Controllers\AuthController@logout');
     Route::apiResource('tiposV', 'App\Http\Controllers\TipoVeiculosController');
     Route::apiResource('veiculos', 'App\Http\Controllers\VeiculosController');
-
     Route::post('adicionarveiculos/{id}', 'App\Http\Controllers\CaravanasController@adicionarveiculos');
-
     Route::get('caravanasveiculos/{id}', 'App\Http\Controllers\CaravanasController@getone');
 });
 
