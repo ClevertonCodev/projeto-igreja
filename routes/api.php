@@ -27,6 +27,7 @@ Route::prefix('v1')->middleware('jwt.auth')->group(function(){
     Route::apiResource('veiculos', 'App\Http\Controllers\VeiculosController');
     Route::post('adicionarveiculos/{id}', 'App\Http\Controllers\CaravanasController@adicionarveiculos');
     Route::get('caravanasveiculos/{id}', 'App\Http\Controllers\CaravanasController@getone');
+    Route::get('veiculoslivres/{id}','App\Http\Controllers\CaravanasController@caravanashasveiculoslivres');
 });
 
 Route::post('login', 'App\Http\Controllers\AuthController@login');

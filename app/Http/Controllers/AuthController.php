@@ -22,10 +22,13 @@ class AuthController extends Controller
     if($active == 1){
 
       $credenciais = $request->all(['email', 'password']);
-      $token = auth('api')->attempt($credenciais);
+      $token = auth('api')->setTTL(1800)->attempt($credenciais);
+      $refreshToken = auth('api')->setTTL(3600)->refresh();
+
       if($token){
        return response()->json(
-        ['token'=> $token]);
+        ['token'=> $token,
+        'refreshtoken'=>  $refreshToken]);
       }else{
        return response()->json(['erro' => 'Usuário ou senha inválido!'], 403);
 
