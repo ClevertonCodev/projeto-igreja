@@ -1,9 +1,6 @@
 <?php
 
 namespace App\Models;
-
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -29,9 +26,7 @@ class User extends Authenticatable implements JWTSubject
         return  [
         'name' => 'required',
         'email' => 'required|unique:Users,email,'.$this->id,
-        'cpf' => 'required|unique:', Rule::unique('users')->where(function ($query) {
-                return $query->where('id', '<>', $this->id);
-            }),
+        'cpf' => 'required|unique:Users,cpf,'.$this->id,
         'active'=> 'required',
         'password'=> 'required',
         'telefone'  => 'required',

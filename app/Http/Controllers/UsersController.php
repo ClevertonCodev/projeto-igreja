@@ -65,30 +65,32 @@ class UsersController extends Controller
         $request->validate($this->Users->rules(), $this->Users->feedback());
         $user = $request->type;
         $ala = $request->alas_id;
-
         $type = auth()->user()->type;
-       
-        if ($type == 'super') {
-            if ($user == 'super' || $user == 'secretarios'|| $user == 'comum' && $ala != '') {
-                $users = User::create(array_merge(
-                    $request->only('name', 'email', 'active', 'type', 'rg', 'cpf', 'telefone', 'endereço', 'alas_id'),
-                    ['password' => Hash::make($request->password)],
-                ));
-                return response()->json($users, 201);
-            }
-        }
-    
-        if ($type == 'secretarios') {
-            if ($user == 'secretarios'|| $user == 'comum' && $ala != '') {
 
-                $users = User::create(array_merge(
-                    $request->only('name', 'email', 'active', 'type', 'rg', 'cpf', 'telefone', 'endereço', 'alas_id'),
-                    ['password' => Hash::make($request->password)],
-                ));
-                return response()->json($users, 201);
-            }
+        $validUserTypes = [
+            'super' => ['super', 'secretarios', 'comum'],
+            'secretarios' => ['secretarios', 'comum'],
+            'comum' => ['comum']
+        ];
+
+        if (!isset($validUserTypes[$type])) {
+            return response()->json(['erro' => 'você não tem autorização'], 404);
         }
-        return response()->json(['erro' => 'você não tem autorização'], 404);
+
+        if (!in_array($user, $validUserTypes[$type])) {
+            return response()->json(['erro' => 'você não tem autorização'], 404);
+        }
+
+        if ($user == 'comum' && empty($ala)) {
+            return response()->json(['erro' => 'Ala é obrigatório'], 400);
+        }
+        
+        $users = User::create(array_merge(
+            $request->only('name', 'email', 'active', 'type', 'rg', 'cpf', 'telefone', 'endereço', 'alas_id'),
+            ['password' => Hash::make($request->password)],
+        ));
+
+        return response()->json($users, 201);
     }
 
     /**

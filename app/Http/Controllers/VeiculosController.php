@@ -73,10 +73,20 @@ class VeiculosController extends Controller
      * @param  \App\Models\Veiculos  $veiculos
      * @return \Illuminate\Http\Response
      */
-    // public function edit(Veiculos $veiculos)
-    // {
-    //     //
-    // }
+    public function RemoveCaravans(Request $request, $id)
+    {   $Idcaravana = $request->caravana;
+
+        $veiculo = $this->Veiculos->find($id)->load('caravanas');
+
+        $removeCaravans = $veiculo->caravanas()->detach($Idcaravana);
+
+        if($removeCaravans){
+            return response()->json(['msg' => ' O veiculo foi removido com sucesso!'], 200);
+        }
+
+        return response()->json(['msg' => ' algo deu errado!'], 500);
+
+    }
 
     /**
      * Update the specified resource in storage.

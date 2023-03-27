@@ -113,27 +113,31 @@ class CaravanasController extends Controller
 
         $dataHoraPartida = $caravanas->DataHora_partida;
         $dataHoraRetorno = $caravanas->DataHora_retorno;
+        $veiculos = Veiculos::all();
+        $veiculos->load('tipo_veiculos');
+        $veiculosDisponiveis = [];
 
-        $veiculos_disponiveis = DB::table('veiculos')
-            ->leftJoin('caravanas_veiculos', 'veiculos.id', '=', 'caravanas_veiculos.veiculos_id')
-            ->leftJoin('caravanas', 'caravanas_veiculos.caravanas_id', '=', 'caravanas.id')
-            ->leftJoin('tipo_veiculos', 'veiculos.tipo_veiculos_id', '=', 'tipo_veiculos.id')
-            ->whereNull('caravanas.Status')
-            ->orWhere('caravanas.Status', '<>', 'Ativa')
-            ->orWhereNotExists(function ($query) use ($dataHoraPartida, $dataHoraRetorno) {
-                $query->select(DB::raw(1))
-                    ->from('caravanas_veiculos')
-                    ->join('caravanas', 'caravanas_veiculos.caravanas_id', '=', 'caravanas.id')
-                    ->whereRaw('caravanas.DataHora_partida <= ? and caravanas.DataHora_retorno >= ?', [$dataHoraRetorno, $dataHoraPartida])
-                    ->whereRaw('caravanas_veiculos.veiculos_id = veiculos.id');
-            })
-            ->select('veiculos.*', 'tipo_veiculos.tipo')
-            ->get();
+        foreach ($veiculos as $veiculo) {
+
+            $caravanaVeiculo = Caravanas_veiculos::where('veiculos_id', $veiculo->id)->get();
+
+            $caravanasValidas = [];
+
+            foreach ($caravanaVeiculo as $cv) {
+                $caravana = $this->caravanas->find($cv->caravanas_id);
+                if ($caravana && $caravana->Status == 'Ativa' && $caravana->DataHora_partida <= $dataHoraRetorno && $caravana->DataHora_retorno >= $dataHoraPartida) {
+                    $caravanasValidas[] = $caravana;
+                }
+            }
+            if (count($caravanasValidas) == 0) {
+                $veiculosDisponiveis[] = $veiculo;
+            }
 
 
-        return  response()->json($veiculos_disponiveis, 200);
+        }
+
+        return response()->json($veiculosDisponiveis, 200);
     }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -171,12 +175,23 @@ class CaravanasController extends Controller
         }
         $veiculos = $request->veiculo;
 
-        if($veiculos == null){
+        if ($veiculos == null) {
             return response()->json(['erro' => 'Entidade veiculo não processável'], 422);
         }
         $Cadastrarveiculos = explode(',', $veiculos);
 
-        $conflitos = DB::table('veiculos')->join('caravanas_veiculos', 'veiculos.id', '=', 'caravanas_veiculos.veiculos_id')->join('caravanas', 'caravanas_veiculos.caravanas_id', '=', 'caravanas.id')->where('caravanas.DataHora_retorno', '>', $caravanas->DataHora_partida)->where('caravanas.DataHora_partida', '<', $caravanas->DataHora_retorno)->whereIn('veiculos.id', $Cadastrarveiculos)->get();
+        $conflitos = collect();
+
+        foreach ($Cadastrarveiculos as $veiculo_id) {
+            $veiculo = Veiculos::find($veiculo_id);
+            if ($veiculo == null) {
+                return response()->json(['erro' => 'Veículo não encontrado'], 404);
+            }
+            $caravanas_em_conflito = $veiculo->caravanas()->where('DataHora_retorno', '>', $caravanas->DataHora_partida)->where('DataHora_partida', '<', $caravanas->DataHora_retorno)->get();
+            if ($caravanas_em_conflito->count() > 0) {
+                $conflitos = $conflitos->merge($caravanas_em_conflito);
+            }
+        }
 
         if ($conflitos->count() > 0) {
             return response()->json(['erro' => 'O veiculo está em uso'], 404);
@@ -201,7 +216,7 @@ class CaravanasController extends Controller
     public function update(Request $request, $id)
     {
         $caravanas = $this->caravanas->find($id);
-        
+
         if ($caravanas === null) {
             return response()->json(['erro' => 'O recurso solicitado não existe'], 404);
         }

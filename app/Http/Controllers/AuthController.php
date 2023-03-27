@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Tymon\JWTAuth\JWTAuth;
+use Tymon\JWTAuth\Contracts\Providers\Auth;
+use Carbon\Carbon;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -22,14 +24,14 @@ class AuthController extends Controller
     if($active == 1){
 
       $credenciais = $request->all(['email', 'password']);
-      $token = auth('api')->setTTL(1800)->attempt($credenciais);
-      $refreshToken = auth('api')->setTTL(3600)->refresh();
-
-      if($token){
-       return response()->json(
-        ['token'=> $token,
-        'refreshtoken'=>  $refreshToken]);
-      }else{
+      $acessToken = auth('api')->attempt($credenciais);
+      if ($acessToken){
+        $refreshToken = auth('api')->setTTL(Carbon::now()->addMinutes(160)->timestamp)->attempt($credenciais);
+        return response()->json([
+            'token' => $acessToken ,
+            'refresh_token' => $refreshToken,
+        ]);
+    }else{
        return response()->json(['erro' => 'Usuário ou senha inválido!'], 403);
 
       }
