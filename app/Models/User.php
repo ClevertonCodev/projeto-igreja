@@ -28,11 +28,10 @@ class User extends Authenticatable implements JWTSubject
         'email' => 'required|unique:Users,email,'.$this->id,
         'cpf' => 'required|unique:Users,cpf,'.$this->id,
         'active'=> 'required',
-        'password'=> 'required',
+        'password'=> 'sometimes|required',
         'telefone'  => 'required',
         'endereço' => 'required'
         ];
-
     }
 
     public function feedback(){

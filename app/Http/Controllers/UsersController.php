@@ -84,7 +84,7 @@ class UsersController extends Controller
         if ($user == 'comum' && empty($ala)) {
             return response()->json(['erro' => 'Ala é obrigatório'], 400);
         }
-        
+
         $users = User::create(array_merge(
             $request->only('name', 'email', 'active', 'type', 'rg', 'cpf', 'telefone', 'endereço', 'alas_id'),
             ['password' => Hash::make($request->password)],
@@ -134,12 +134,17 @@ class UsersController extends Controller
         if ($users === null) {
             return response()->json(['erro' => 'O recurso solicitado não existe'], 404);
         }
+        if ($request->has('password')) {
+            $users->update(['password' => bcrypt($request->password)]);
+            return response()->json($users, 200);
+        }
         $request->validate($users->rules(), $users->feedback());
 
         $users->update(array_merge(
-            $request->only('name', 'email', 'active', 'type', 'rg', 'cpf', 'telefone', 'endereço', 'alas_id'),
-            ['password' => Hash::make($request->password)],
+            $request->only('name', 'email', 'active', 'type', 'rg', 'cpf', 'telefone', 'endereço', 'alas_id')
         ));
+
+
 
         return response()->json($users, 200);
     }
