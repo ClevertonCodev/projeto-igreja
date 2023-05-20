@@ -43,7 +43,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function alas() {
-        //um usuario comum pertence a varias alas
+       
         return $this->belongsTo('App\Models\Alas');
     }
 

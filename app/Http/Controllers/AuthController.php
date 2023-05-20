@@ -17,6 +17,7 @@ class AuthController extends Controller
 
   public function login(Request $request)
   {
+  
     $email =  $request->email;
     $results = $this->User->where('email', $email)->get('active');
     $active = $results ->implode('active');
